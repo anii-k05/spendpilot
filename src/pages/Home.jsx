@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Stats from "../components/Stats"
 import Features from "../components/Features"
+import ToolSelector from "../components/forms/ToolSelector";
 
 function Home() {
   return (
@@ -10,6 +11,7 @@ function Home() {
       <Hero />
       <Stats />
       <Features />
+      <ToolSelector />
     </div>
   );
 }
