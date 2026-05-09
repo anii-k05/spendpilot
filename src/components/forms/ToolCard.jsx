@@ -78,17 +78,17 @@ const ToolCard = ({
               type="number"
               min="0"
               placeholder="Enter monthly spend"
-              value={toolData?.spend || ""}
+              value={toolData?.monthlySpend || ""}
               onClick={(e) => e.stopPropagation()}
               onChange={(e) =>
-                onInputChange(name, "spend", e.target.value)
+                onInputChange(name, "monthlySpend", e.target.value)
               }
               className="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 outline-none focus:border-green-500 invalid:border-red-500"
             />
 
           </div>
 
-          {/* Seats */}
+          {}
 
           <div>
 
@@ -111,7 +111,7 @@ const ToolCard = ({
 
           </div>
 
-          {/* Usage */}
+          {}
 
           <div>
 

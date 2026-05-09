@@ -36,7 +36,7 @@ I initially faced React file casing issues (`Navbar.jsx` vs `navbar.jsx`). But m
 **What I did:**  
 Today I designed an interactive AI tool selection system for spendpilot and i used react state management for it. I added selectable tool cards for each AI tool and further made it expandable as well as i included logos for all AI tool like ChatGPT, Claude, Gemini, Cursor, GitHub Copilot and Windsurf. In the expandable property I added user input features like monthly spending, seat count and frequency of use for each tool selected. After that i implemented localStorage saving so that the user data remains saved even after the browser gets accidently refreshed or closed. Followed by it today i again worked on improving the UI by refining spacing, alignment, hover effects, responsive layout, and card styling to make the application look more polished and modern. I added basic validation to teh form as well to prevent users from entering invalid values 
 
-**What I learned:** 
+**What I learned:**
 I learned more about managing dynamic state in React and handling conditional rendering inside reusable components. I also improved my understanding of localStorage persistance and how not to complexify the code by added unwanted features for validation and how to keep the code clean by using native HTML input attributes with React and still achieving the required amount of validtion for a form. Also i got to know how small layout changes can affect the look of the UI and affect the responsivenes 
 
 **Blockers / what I'm stuck on:**  
@@ -47,3 +47,24 @@ I am still facing minor responsive UI issues where the texts and the inputs insi
 - Start building the audit summary section
 - Begin implementing cost calculation logic
 - Start planning recommendation rules for the audit engine
+
+
+## Day 3 — 2026-05-09
+
+**Hours worked:** 2
+
+**What I did:**  
+Today my only aim was to build the core audit logic system of SpendPilot which will act like the brain of the webapp. Firstly i created a separate utility file namely auditEngine.js and in that file i tried to keep the calculation logic simple and easy to code but yet modular and i tried to maintain it rather than placing everything directly inside the UI components. Then i implemented a savings calculation logic. So now it will analyze the user input from the fields of monthly spend, number of seats, and frequency of usage and then it will generate an estimate for optimized spending and recommend if any savings can be made based on the other plans. Continuing with the logic section i added a recommendation generation logic for different scenarios which recommends other low costing plans, any overspending warning if spending is high or also suggest enterprise pricing consideration if the people using the Tool are more and vice versa. Lastly i completed today's work with connecting the audit engine with frontend so it displays current spend, recommend spend, estimated savings and generated recommendations based on the input. I even tested the logic with various different inputs to verify is the recommendations being generated are legit or not
+
+**What I learned:**  
+Today I learned how keeping the logic separate from the UI makes and keeps our app clean and easier to work on. I only focused on the logic of the app today rather than enhancing the UI or polishing it i only created a basic UI  in simple words i only added the features and functionalities that are required to make the app run. 
+
+**Blockers / what I'm stuck on:**  
+As such there weren't any major blockers faced today only during the implementation of coding part i felt like i was stuck on what conditional statements i should use so that i can keep to code as simple as possible to understand. 
+
+**Plan for tomorrow:**  
+- Improve audit summary UI polish and responsiveness
+- Fix remaining overflow and spacing issues
+- Start building total savings overview section
+- Add better formatting for financial outputs
+- Begin improving recommendation accuracy using pricing references from the original websites.
