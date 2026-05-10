@@ -68,3 +68,24 @@ As such there weren't any major blockers faced today only during the implementat
 - Start building total savings overview section
 - Add better formatting for financial outputs
 - Begin improving recommendation accuracy using pricing references from the original websites.
+
+
+## Day 4 — 2026-05-10
+
+**Hours worked:** 1
+
+**What I did:**  
+Today i did a very minimal work due to other commitments, what i worked on is improving the dashboard for my webapp by adding an audit result section which i feel is actually better than just keeping a basic output section. I then added analytics card which will display total monthly spend, optimized spend, estimated savings, and annual savings based on the user input. And then to further enhance the user experience i implemented a monthly vs annual comparison which compares the current yearly spending and optimized yearly spending and based on that it will also give us potential yearly savings. Along with that i added a risk indicators inside the summary cards which will show low risk, medium risk, or high risk based on the calculations.  
+
+**What I learned:**  
+As i worked on a very few things today i did not have much knowledge to gain but i did understand one thing that the more we make it easier for the user to understand the better our app gets like small visualization or the better presentation we make it improves the overall user experience  
+
+**Blockers / what I'm stuck on:**  
+There are still some UI polishing and responsiveness issues remaining in the dashboard section, especially regarding spacing consistency and overflow behavior on different screen sizes. The logic and calculations are working correctly but the visual refinement still needs improvement.
+
+**Plan for tomorrow:**  
+- Improve dashboard responsiveness and spacing consistency
+- Add better gradients and hover animations
+- Improve financial number formatting
+- Polish audit summary card UI
+- Start planning charts and graphical visualization section
