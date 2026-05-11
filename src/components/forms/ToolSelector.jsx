@@ -5,6 +5,8 @@ import {
   calculateSavings,
   generateRecommendation,
 } from "../../utils/auditEngine";
+import generateAISummary from "../../utils/aiSummaryGenerator";
+import { saveAuditReport } from "../../utils/database";
 
 const ToolSelector = () => {
 
@@ -112,12 +114,36 @@ const ToolSelector = () => {
   );
 
   const annualSavings = totalSavings * 12;
+  const aiSummary = generateAISummary(auditResults);
+ const handleSaveAudit = async () => {
+
+  if (auditResults.length === 0) {
+    alert("No audit data to save.");
+    return;
+  }
+
+  for (const result of auditResults) {
+
+    await saveAuditReport({
+      tool_name: result.toolName,
+      monthly_spend: result.monthlySpend,
+      recommended_spend: result.recommendedSpend,
+      savings: result.savings,
+      risk_level: result.riskLevel,
+      ai_summary: result.recommendation,
+    });
+
+  }
+
+  alert("Audit report saved successfully!");
+
+};
 
   return (
 
-    <section className="w-full bg-black text-white py-24">
+    <section className="w-full bg-black text-white py-32">
 
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
 
         <div className="text-center mb-14">
 
@@ -131,7 +157,7 @@ const ToolSelector = () => {
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
 
           {tools.map((tool) => (
 
@@ -149,62 +175,69 @@ const ToolSelector = () => {
         </div>
 
       </div>
+      <div className="flex justify-center mt-16">
 
+        <button
+          onClick={handleSaveAudit}
+          className="bg-green-500 hover:bg-green-400 text-black font-bold px-8 py-4 rounded-2xl transition-all duration-300"
+        >
+          Generate & Save Audit Report
+        </button>
+
+      </div>
       {/* TOP SUMMARY CARDS */}
 
       <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 max-w-7xl mx-auto">
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 space-y-2">
+        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-10 space-y-3 hover:border-zinc-700 transition-all duration-300">
 
           <p className="text-zinc-400 mb-3">
             Total Monthly Spend
           </p>
 
-          <h2 className="text-4xl font-bold">
+          <h2 className="text-5xl font-bold">
             ${totalCurrentSpend.toFixed(0)}
           </h2>
 
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 space-y-2">
+        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-10 space-y-3 hover:border-zinc-700 transition-all duration-300">
 
           <p className="text-zinc-400 mb-3">
             Optimized Spend
           </p>
 
-          <h2 className="text-4xl font-bold text-green-400">
+          <h2 className="text-5xl font-bold text-green-400">
             ${totalRecommendedSpend.toFixed(0)}
           </h2>
 
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 space-y-2">
+        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-10 space-y-3 hover:border-zinc-700 transition-all duration-300">
 
           <p className="text-zinc-400 mb-3">
             Estimated Savings
           </p>
 
-          <h2 className="text-4xl font-bold text-green-500">
+          <h2 className="text-5xl font-bold text-green-500">
             ${totalSavings.toFixed(0)}
           </h2>
 
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 space-y-2">
+        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-10 space-y-3 hover:border-zinc-700 transition-all duration-300">
 
           <p className="text-zinc-400 mb-3">
             Annual Savings
           </p>
 
-          <h2 className="text-4xl font-bold text-blue-400">
+          <h2 className="text-5xl font-bold text-blue-400">
             ${annualSavings.toFixed(0)}
           </h2>
 
         </div>
 
       </div>
-
-      {/* ANNUAL COMPARISON */}
 
       <div className="mt-20 bg-zinc-900 border border-zinc-800 rounded-3xl p-10 max-w-7xl mx-auto">
 
@@ -214,37 +247,37 @@ const ToolSelector = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-          <div className="bg-zinc-950 rounded-2xl p-6 border border-zinc-800">
+          <div className="bg-zinc-950/80 border border-zinc-800 rounded-3xl p-8 hover:border-zinc-700 transition-all duration-300">
 
             <p className="text-zinc-400 mb-3">
               Current Annual Spend
             </p>
 
-            <h3 className="text-4xl font-bold">
+            <h3 className="text-5xl font-bold">
               ${(totalCurrentSpend * 12).toFixed(0)}
             </h3>
 
           </div>
 
-          <div className="bg-zinc-950 rounded-2xl p-6 border border-zinc-800">
+          <div className="bg-zinc-950/80 border border-zinc-800 rounded-3xl p-8 hover:border-zinc-700 transition-all duration-300">
 
             <p className="text-zinc-400 mb-3">
               Optimized Annual Spend
             </p>
 
-            <h3 className="text-4xl font-bold text-green-400">
+            <h3 className="text-5xl font-bold text-green-400">
               ${(totalRecommendedSpend * 12).toFixed(0)}
             </h3>
 
           </div>
 
-          <div className="bg-zinc-950 rounded-2xl p-6 border border-zinc-800">
+          <div className="bg-zinc-950/80 border border-zinc-800 rounded-3xl p-8 hover:border-zinc-700 transition-all duration-300">
 
             <p className="text-zinc-400 mb-3">
               Potential Yearly Savings
             </p>
 
-            <h3 className="text-4xl font-bold text-blue-400">
+            <h3 className="text-5xl font-bold text-blue-400">
               ${annualSavings.toFixed(0)}
             </h3>
 
@@ -254,6 +287,29 @@ const ToolSelector = () => {
 
       </div>
 
+      {/* AI EXECUTIVE SUMMARY */}
+
+      <div className="mt-20 px-6 max-w-7xl mx-auto">
+
+        <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 rounded-3xl p-10">
+
+          <div className="flex items-center gap-3 mb-6">
+
+            <div className="w-4 h-4 rounded-full bg-green-500"></div>
+
+            <h2 className="text-4xl font-bold">
+              AI Executive Summary
+            </h2>
+
+          </div>
+
+          <p className="text-zinc-300 text-lg leading-relaxed">
+            {aiSummary}
+          </p>
+
+        </div>
+
+      </div>
       {/* AUDIT SUMMARY */}
 
       <div className="mt-20 px-6 max-w-7xl mx-auto">
@@ -268,7 +324,7 @@ const ToolSelector = () => {
 
             <div
               key={index}
-              className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8"
+              className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-10 hover:border-zinc-700 transition-all duration-300"
             >
 
               <div className="flex items-center justify-between mb-6">
@@ -317,7 +373,16 @@ const ToolSelector = () => {
 
               </div>
 
-              <div className="mt-6 p-4 rounded-2xl bg-zinc-800/60 border border-zinc-700">
+              <div
+              className={`mt-6 p-4 rounded-2xl border
+              ${
+                result.riskLevel === "High"
+                  ? "bg-red-500/10 border-red-500/30"
+                  : result.riskLevel === "Medium"
+                  ? "bg-yellow-500/10 border-yellow-500/30"
+                  : "bg-green-500/10 border-green-500/30"
+              }`}
+              >
 
                 <p className="text-zinc-300 leading-relaxed">
                   {result.recommendation}

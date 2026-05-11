@@ -89,3 +89,24 @@ There are still some UI polishing and responsiveness issues remaining in the das
 - Improve financial number formatting
 - Polish audit summary card UI
 - Start planning charts and graphical visualization section
+
+
+## Day 5 — 2026-05-11
+
+**Hours worked:** 6
+
+**What I did:**  
+Today i started with integrating  AI summary system into the dashboard which will generate a business specific summary based on the audit results and to support future AI integrations, i created a separate `PROMPTS.md` file where I documented the prompt i used along with the structure, reason for using the specific prompt, previous failed prompts and where i lacked and what issues i faced along with some future improvements for LLM integration. After that i started with the backend today using supabase. i used supabase to avoid complex backend structure because as there is time constraint as well as it will be easy for me to implement and explain my app as it keeps the architecture cleaner and easy to maintain. I created a cloud database table for storing the reports and then connected frontend with supabase so now the reports generated will be saved in the database. Initially the audit reports were being auto saved on every state update for example every change i was making it was getting reflected in the database sot to solve it i implemented a simple button and removed the auto saving logic so now the reports will only be stored in the database after clicking the generate button and i ended today's work by checking different audit scenarios and ensured that the data was successfully being stored in supabase 
+
+**What I learned:**  
+Today I learned how to separate the database from the UI and how it helps us to keep the code easy to maintain another important thing i feel that i learned is that automatically triggering database operations on every render creates unnecessary duplicate entries making it very complex to handle the database so implementing proper controlled save actions is really helpful and is a good concept that should be implemented in real world applications.
+
+**Blockers / what I'm stuck on:**  
+During i was implementing the AI summary logic it took me a bit of time to make the system generate a concise and business oriented yet easy to understand summary so yes i was stuck on the summary section trying to make it as simple to understand as possible and i spent some time in understanding supabase dashboard because initially i faced 404 errors then upon checking the browser console i rectified that the API URL was wrongly configured so i fixed it then. 
+
+**Plan for tomorrow:**  
+- Fetch and display saved audit reports from supabase  
+- Improve saved reports dashboard UI  
+- Fix minor bugs and make the app more smooth  
+- Complete the backend work and deploy the app on vercel  
+- Try to complete majority of the work so only final checks and UI improvements are left for the final day
