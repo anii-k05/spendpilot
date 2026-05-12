@@ -1,40 +1,47 @@
 import { supabase } from "../lib/supabase";
 
-export const saveAuditReport = async (reportData) => {
+export const saveLead = async (leadData) => {
   try {
+
     const { data, error } = await supabase
-      .from("audit_reports")
-      .insert([reportData])
+      .from("leads")
+      .insert([leadData])
       .select();
 
     if (error) {
-      console.error("Error saving report:", error);
+      console.error("Error saving lead:", error);
       return null;
     }
 
     return data;
+
   } catch (err) {
+
     console.error("Unexpected error:", err);
     return null;
+
   }
 };
 
-export const getAuditReports = async () => {
+export const getLeads = async () => {
   try {
+
     const { data, error } = await supabase
-      .from("audit_reports")
+      .from("leads")
       .select("*")
-      .order("created_at", { ascending: false })
-      .limit(6);
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching reports:", error);
+      console.error("Error fetching leads:", error);
       return [];
     }
 
     return data;
+
   } catch (err) {
+
     console.error("Unexpected error:", err);
     return [];
+
   }
 };

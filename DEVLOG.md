@@ -110,3 +110,26 @@ During i was implementing the AI summary logic it took me a bit of time to make 
 - Fix minor bugs and make the app more smooth  
 - Complete the backend work and deploy the app on vercel  
 - Try to complete majority of the work so only final checks and UI improvements are left for the final day
+
+
+## Day 6 — 2026-05-12
+
+**Hours worked:** 7
+
+**What I did:**  
+Today i mainly focused on improving the UI consistency and overall dashboard experience of SpendPilot. Most of the work today was related to fixing spacing, alignment, responsiveness, and section hierarchy issues across different dashboard sections because many of the cards and sections were looking visually congested due to independent component rendering. Apart from UI work, i also improved alignment consistency of headings, cards, summary sections, and form layouts. I tested multiple layouts and spacing combinations to make the dashboard feel less cramped while still maintaining responsiveness across screen sizes.
+
+**What I learned:** 
+Today I learned that UI polish takes significantly more time than implementing the actual functionality because even small spacing inconsistencies can affect the complete visual experience of the application. I also understood how independent reusable components can sometimes create unexpected alignment and spacing issues when combined together in larger layouts. Another thing i noticed is that proper section hierarchy improves user flow and reduces unnecessary friction while interacting with forms and buttons.
+
+**Blockers / what I'm stuck on:** 
+The major blocker today was debugging spacing consistency between independent dashboard sections because some components were behaving differently depending on whether data existed or not. I spent a lot of time testing different margin, padding, height, and layout combinations to maintain visual consistency across empty and populated states.
+
+**Plan for tomorrow:**  
+- Complete all remaining documentation files required for submission
+- Deploy the application and verify all links and features are working correctly 
+- Clean up unused code and improve overall project structure  
+- Complete the backend work and deploy the app on vercel  
+- Organize Git commits and complete final GitHub push
+- Prepare screenshots, screen recording, and final submission materials
+- Make the project fully submission-ready

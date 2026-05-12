@@ -1,16 +1,27 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import tools from "../../data/tools";
 import ToolCard from "./ToolCard";
-import {
+import { 
   calculateSavings,
   generateRecommendation,
 } from "../../utils/auditEngine";
 import generateAISummary from "../../utils/aiSummaryGenerator";
-import { saveAuditReport } from "../../utils/database";
+import {
+  saveAuditReport,
+  getAuditReports,
+} from "../../utils/database";
 
+import { saveLead } from "../../utils/leads";
 const ToolSelector = () => {
 
   const [selectedTools, setSelectedTools] = useState([]);
+  const [leadData, setLeadData] = useState({
+    name: "",
+    email: "",
+    company: "",
+  });
+  const [savedReports, setSavedReports] = useState([]);
 
   const [toolInputs, setToolInputs] = useState(() => {
 
@@ -49,7 +60,14 @@ const ToolSelector = () => {
     }));
   };
 
+  const handleLeadInputChange = (field, value) => {
 
+    setLeadData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+  };
   useEffect(() => {
 
     localStorage.setItem(
@@ -58,6 +76,22 @@ const ToolSelector = () => {
     );
 
   }, [toolInputs]);
+
+  useEffect(() => {
+
+    const fetchReports = async () => {
+
+      const reports = await getAuditReports();
+
+      if (reports) {
+        setSavedReports(reports);
+      }
+
+    };
+
+    fetchReports();
+
+  }, []);
 
   const auditResults = selectedTools.map((toolName) => {
 
@@ -115,35 +149,66 @@ const ToolSelector = () => {
 
   const annualSavings = totalSavings * 12;
   const aiSummary = generateAISummary(auditResults);
- const handleSaveAudit = async () => {
+  const handleGenerateReport = async () => {
 
-  if (auditResults.length === 0) {
-    alert("No audit data to save.");
-    return;
-  }
+    if (selectedTools.length === 0) {
+      toast.error("Please select at least one AI tool.");
+      return;
+    }
 
-  for (const result of auditResults) {
+    if (auditResults.length === 0) {
+      toast.error("Please fill the tool details first.");
+      return;
+    }
+    if (
+        !leadData.name ||
+        !leadData.email ||
+        !leadData.company
+       ) {
 
-    await saveAuditReport({
-      tool_name: result.toolName,
-      monthly_spend: result.monthlySpend,
-      recommended_spend: result.recommendedSpend,
-      savings: result.savings,
-      risk_level: result.riskLevel,
-      ai_summary: result.recommendation,
+        toast.error("Please fill all lead details.");
+        return;
+
+      }
+
+    try {
+      await saveLead({
+      name: leadData.name,
+      email: leadData.email,
+      company: leadData.company,
     });
+      for (const result of auditResults) {
 
-  }
+        await saveAuditReport({
+          tool_name: result.toolName,
+          monthly_spend: result.monthlySpend,
+          recommended_spend: result.recommendedSpend,
+          savings: result.savings,
+          risk_level: result.riskLevel,
+          ai_summary: aiSummary,
+        });
 
-  alert("Audit report saved successfully!");
+      }
 
-};
+      toast.success("Audit report saved successfully!");
+
+      } catch (error) {
+
+        console.error(error);
+
+        toast.error("Failed to save audit report.");
+
+    }
+  };
 
   return (
 
-    <section className="w-full bg-black text-white py-32">
+    <section
+      id="audit-section"
+      className="w-full bg-black text-white py-32 overflow-x-hidden"
+    >
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="w-full max-w-7xl mx-auto px-6">
 
         <div className="text-center mb-14">
 
@@ -157,7 +222,7 @@ const ToolSelector = () => {
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-fr">
 
           {tools.map((tool) => (
 
@@ -175,63 +240,54 @@ const ToolSelector = () => {
         </div>
 
       </div>
-      <div className="flex justify-center mt-16">
-
-        <button
-          onClick={handleSaveAudit}
-          className="bg-green-500 hover:bg-green-400 text-black font-bold px-8 py-4 rounded-2xl transition-all duration-300"
-        >
-          Generate & Save Audit Report
-        </button>
-
-      </div>
+      
       {/* TOP SUMMARY CARDS */}
 
-      <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-6 max-w-7xl mx-auto mt-10 " >
 
-        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-10 space-y-3 hover:border-zinc-700 transition-all duration-300">
+        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-8 flex flex-col justify-center min-h-[80px] hover:border-zinc-700 transition-all duration-300">
 
           <p className="text-zinc-400 mb-3">
             Total Monthly Spend
           </p>
 
-          <h2 className="text-5xl font-bold">
+          <h2 className="text-4xl md:text-5xl font-bold">
             ${totalCurrentSpend.toFixed(0)}
           </h2>
 
         </div>
 
-        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-10 space-y-3 hover:border-zinc-700 transition-all duration-300">
+        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-8 flex flex-col justify-center min-h-[80px] hover:border-zinc-700 transition-all duration-300">
 
           <p className="text-zinc-400 mb-3">
             Optimized Spend
           </p>
 
-          <h2 className="text-5xl font-bold text-green-400">
+          <h2 className="text-4xl md:text-5xl font-bold">
             ${totalRecommendedSpend.toFixed(0)}
           </h2>
 
         </div>
 
-        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-10 space-y-3 hover:border-zinc-700 transition-all duration-300">
+        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-8 flex flex-col justify-center min-h-[80px] hover:border-zinc-700 transition-all duration-300">
 
           <p className="text-zinc-400 mb-3">
             Estimated Savings
           </p>
 
-          <h2 className="text-5xl font-bold text-green-500">
+          <h2 className="text-4xl md:text-5xl font-bold">
             ${totalSavings.toFixed(0)}
           </h2>
 
         </div>
 
-        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-10 space-y-3 hover:border-zinc-700 transition-all duration-300">
+        <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-8 flex flex-col justify-center min-h-[120px] hover:border-zinc-700 transition-all duration-300">
 
           <p className="text-zinc-400 mb-3">
             Annual Savings
           </p>
 
-          <h2 className="text-5xl font-bold text-blue-400">
+          <h2 className="text-4xl md:text-5xl font-bold">
             ${annualSavings.toFixed(0)}
           </h2>
 
@@ -239,7 +295,18 @@ const ToolSelector = () => {
 
       </div>
 
-      <div className="mt-20 bg-zinc-900 border border-zinc-800 rounded-3xl p-10 max-w-7xl mx-auto">
+      <div className=" 
+        mt-16
+        bg-zinc-900/80
+        backdrop-blur-sm
+        border
+        border-zinc-800
+        rounded-[32px]
+        px-12 py-16
+        max-w-7xl
+        mx-auto
+        shadow-[0_0_40px_rgba(255,255,255,0.03)]
+      ">
 
         <h2 className="text-4xl font-bold mb-10 text-center">
           Monthly vs Annual Comparison
@@ -286,14 +353,101 @@ const ToolSelector = () => {
         </div>
 
       </div>
+      <div className="mt-24 px-6 max-w-7xl mx-auto">
+      
+
+        <div className="
+          bg-zinc-900/80
+          backdrop-blur-sm
+          border
+          border-zinc-800
+          rounded-[32px]
+          p-12
+          shadow-[0_0_40px_rgba(255,255,255,0.03)]
+        ">
+
+          <h2 className="text-4xl font-bold mb-8 text-center">
+            Save Your Audit Report
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+
+            <input
+              type="text"
+              placeholder="Your Name"
+              value={leadData.name}
+              onChange={(e) =>
+                handleLeadInputChange("name", e.target.value)
+              }
+              className="
+                bg-zinc-950
+                border
+                border-zinc-700
+                rounded-2xl
+                px-5
+                py-4
+                text-white
+                outline-none
+                focus:border-green-500
+                transition-all
+                duration-300"
+            />
+
+            <input
+              type="email"
+              placeholder="Your Email"
+              value={leadData.email}
+              onChange={(e) =>
+                handleLeadInputChange("email", e.target.value)
+              }
+              className="
+                bg-zinc-950
+                border
+                border-zinc-700
+                rounded-2xl
+                px-5
+                py-4
+                text-white
+                outline-none
+                focus:border-green-500
+                transition-all
+                duration-300"
+            />
+
+            <input
+              type="text"
+              placeholder="Company Name"
+              value={leadData.company}
+              onChange={(e) =>
+                handleLeadInputChange("company", e.target.value)
+              }
+              className="
+                bg-zinc-950
+                border
+                border-zinc-700
+                rounded-2xl
+                px-5
+                py-4
+                text-white
+                outline-none
+                focus:border-green-500
+                transition-all
+                duration-300"
+            />
+
+          </div>
+
+        </div>
+
+      </div>
 
       {/* AI EXECUTIVE SUMMARY */}
 
-      <div className="mt-20 px-6 max-w-7xl mx-auto">
+      <div className="mt-24 px-6 max-w-7xl mx-auto">
 
         <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 rounded-3xl p-10">
 
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center justify-center gap-3 mb-8">
 
             <div className="w-4 h-4 rounded-full bg-green-500"></div>
 
@@ -303,28 +457,73 @@ const ToolSelector = () => {
 
           </div>
 
-          <p className="text-zinc-300 text-lg leading-relaxed">
+          <p className="text-zinc-300 text-xl leading-relaxed text-center max-w-5xl mx-auto">
             {aiSummary}
           </p>
 
         </div>
 
       </div>
+
+      <div className="w-full max-w-7xl mx-auto px-6 mt-124 mb-24">
+
+        <div className="flex justify-center pt-16 pb-20">
+
+          <button
+            onClick={handleGenerateReport}
+            className="
+              bg-green-500
+              hover:bg-green-400
+              text-black
+              font-bold
+              px-10
+              py-4
+              rounded-2xl
+              transition-all
+              duration-300
+              hover:scale-105
+              shadow-[0_0_30px_rgba(34,197,94,0.35)]
+            "
+          >
+            Generate & Save Audit Report
+          </button>
+
+        </div>
+
+      </div>
+
+
       {/* AUDIT SUMMARY */}
 
-      <div className="mt-20 px-6 max-w-7xl mx-auto">
+      <div className="mt-24 px-6 max-w-7xl mx-auto">
 
         <h2 className="text-4xl font-bold mb-10 text-center">
           Audit Summary
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div
+          className={`
+            grid grid-cols-1 md:grid-cols-2 gap-8
+            ${auditResults.length === 0 ? "min-h-[140px]" : ""}
+          `}
+        >
 
           {auditResults.map((result, index) => (
 
             <div
               key={index}
-              className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-10 hover:border-zinc-700 transition-all duration-300"
+              className="
+                bg-zinc-900/80
+                backdrop-blur-sm
+                border
+                border-zinc-800
+                rounded-[32px]
+                p-10
+                hover:border-zinc-700
+                hover:-translate-y-1
+                transition-all
+                duration-300
+                shadow-[0_0_30px_rgba(255,255,255,0.03)]"
             >
 
               <div className="flex items-center justify-between mb-6">
@@ -397,7 +596,85 @@ const ToolSelector = () => {
         </div>
 
       </div>
+      
+      {/* SAVED REPORTS */}
 
+    <div className="mt-24 px-6 max-w-7xl mx-auto">
+
+      <h2 className="text-4xl font-bold mb-10 text-center">
+        Saved Audit Reports
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        {savedReports.map((report) => (
+
+          <div
+            key={report.id}
+            className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8"
+          >
+
+            <div className="flex items-center justify-between mb-4">
+
+              <h3 className="text-2xl font-semibold">
+                {report.tool_name}
+              </h3>
+
+              <span
+                className={`px-3 py-1 rounded-full text-sm
+                ${
+                  report.risk_level === "High"
+                    ? "bg-red-500/20 text-red-400"
+                    : report.risk_level === "Medium"
+                    ? "bg-yellow-500/20 text-yellow-300"
+                    : "bg-green-500/20 text-green-400"
+                }`}
+              >
+                {report.risk_level} Risk
+              </span>
+
+            </div>
+
+            <div className="space-y-2 text-zinc-300">
+
+              <p>
+                Monthly Spend:
+                <span className="text-white ml-2">
+                  ${report.monthly_spend}
+                </span>
+              </p>
+
+              <p>
+                Recommended Spend:
+                <span className="text-green-400 ml-2">
+                  ${report.recommended_spend}
+                </span>
+              </p>
+
+              <p>
+                Savings:
+                <span className="text-blue-400 ml-2">
+                  ${report.savings}
+                </span>
+              </p>
+
+            </div>
+
+            <div className="mt-5 p-4 rounded-2xl bg-zinc-950 border border-zinc-800">
+
+              <p className="text-zinc-300">
+                {report.ai_summary}
+              </p>
+
+            </div>
+
+          </div>
+
+        ))}
+
+      </div>
+
+    </div>
     </section>
   );
 };

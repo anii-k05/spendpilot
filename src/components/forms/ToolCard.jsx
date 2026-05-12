@@ -15,13 +15,16 @@ const ToolCard = ({
       className={`
 
       bg-zinc-900/70
-      border
-      rounded-3xl
-      p-8
-      min-h-[180px]
-      transition-all
-      duration-300
-      cursor-pointer
+        border
+        rounded-3xl
+        p-6
+        transition-all
+        duration-300
+        cursor-pointer
+        flex
+        flex-col
+        justify-center
+        h-full
 
       ${
         isSelected
@@ -34,25 +37,25 @@ const ToolCard = ({
 
       {/* TOP SECTION */}
 
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-5">
 
-        <div className="w-16 h-16 rounded-2xl bg-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center overflow-hidden shrink-0 mt-1">
 
           <img
             src={logo}
             alt={name}
-            className="w-10 h-10 object-contain"
+            className="w-11 h-11 object-contain"
           />
 
         </div>
 
         <div>
 
-          <h2 className="text-3xl font-semibold mb-2">
+          <h2 className="text-2xl font-semibold mb-2 leading-tight">
             {name}
           </h2>
 
-          <p className="text-zinc-400 text-lg leading-relaxed">
+          <p className="text-zinc-400 text-base leading-relaxed max-w-sm">
             {description}
           </p>
 
@@ -64,7 +67,7 @@ const ToolCard = ({
 
       {isSelected && (
 
-        <div className="mt-8 border-t border-zinc-800 pt-6 space-y-5">
+        <div className="mt-6 border-t border-zinc-800 pt-5 pb-6 space-y-4">
 
           {/* Monthly Spend */}
 
