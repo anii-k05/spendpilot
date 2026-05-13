@@ -1,5 +1,5 @@
 ## Overview
-SpendPilot uses AI generated summaries to help the users understand about their spending with a concise explanation. For now, the application uses simulated frontend based summary generation logic as a starting phase of the app ensuring that the summaries section is working efficiently. However, the following prompts will document how the LLM APIs(either OpenAI or Anthropic) will support the future integration. The main goal of these prompts is to generate a short and professional summaries that are also business oriented which will help founders and engineering teams to understand their overspending and how they can optimize it further.
+SpendPilot uses AI generated summaries to help the users understand about their spending on their AI . For now, the application uses simulated frontend based summary generation logic as a starting phase of the app ensuring that the summaries section is working efficiently. However, the following prompts will document how the LLM APIs(either OpenAI or Anthropic) will support the future integration. The main goal of these prompts is to generate a short and professional summaries that are also business oriented which will help founders and engineering teams to understand their overspending and how they can optimize it further.
 
 
 ## AI Executive Summary Prompt

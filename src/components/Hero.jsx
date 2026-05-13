@@ -18,13 +18,25 @@ function Hero() {
 
         <div className="flex flex-col sm:flex-row gap-6 mt-12">
 
-          <button className="bg-white text-black px-10 py-4 rounded-full font-semibold text-lg hover:scale-105 transition-all duration-300 shadow-lg">
+          <button
+            onClick={() =>
+              document
+                .getElementById("audit-section")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="bg-white text-black px-10 py-4 rounded-full font-semibold text-lg hover:scale-105 transition-all duration-300 shadow-lg"
+          >
             Run Free Audit
           </button>
 
-          <button className="border border-zinc-700 text-white px-10 py-4 rounded-full text-lg hover:bg-zinc-900 transition-all duration-300">
+          <a
+            href="https://youtube.com/shorts/J3KxdCQROGE?feature=share"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border border-white/20 px-10 py-4 rounded-full font-semibold text-lg hover:bg-white/10 transition-all duration-300"
+          >
             View Demo
-          </button>
+          </a>
 
         </div>
 
