@@ -6,7 +6,8 @@ import {
   calculateSavings,
   generateRecommendation,
 } from "../../utils/auditEngine";
-import generateAISummary from "../../utils/aiSummaryGenerator";
+import generateAISummary from "../../utils/generateAISummary";
+
 import {
   saveAuditReport,
   getAuditReports,
@@ -22,6 +23,8 @@ const ToolSelector = () => {
     company: "",
   });
   const [savedReports, setSavedReports] = useState([]);
+
+  const [generatedSummary, setGeneratedSummary] = useState("");
 
   const [toolInputs, setToolInputs] = useState(() => {
 
@@ -148,7 +151,10 @@ const ToolSelector = () => {
   );
 
   const annualSavings = totalSavings * 12;
-  const aiSummary = generateAISummary(auditResults);
+  const formatINR = (amount) => {
+     return `₹${Number(amount).toLocaleString("en-IN")}`;
+  };
+  
   const handleGenerateReport = async () => {
 
     if (selectedTools.length === 0) {
@@ -170,8 +176,12 @@ const ToolSelector = () => {
         return;
 
       }
+    const aiSummary = await generateAISummary(auditResults);
 
+    setGeneratedSummary(aiSummary);  
     try {
+      const aiSummary = await generateAISummary(auditResults);
+      
       await saveLead({
       name: leadData.name,
       email: leadData.email,
@@ -252,7 +262,7 @@ const ToolSelector = () => {
           </p>
 
           <h2 className="text-4xl md:text-5xl font-bold">
-            ${totalCurrentSpend.toFixed(0)}
+            {formatINR(totalCurrentSpend)}
           </h2>
 
         </div>
@@ -263,20 +273,20 @@ const ToolSelector = () => {
             Optimized Spend
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-bold">
-            ${totalRecommendedSpend.toFixed(0)}
+          <h2 className="text-4xl md:text-5xl font-bold text-green-400">
+            {formatINR(totalRecommendedSpend)}
           </h2>
 
         </div>
 
         <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-3xl p-8 flex flex-col justify-center min-h-[80px] hover:border-zinc-700 transition-all duration-300">
 
-          <p className="text-zinc-400 mb-3">
+          <p className="text-zinc-400 mb-3 ">
             Estimated Savings
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-bold">
-            ${totalSavings.toFixed(0)}
+          <h2 className="text-4xl md:text-5xl font-bold text-green-400">
+            {formatINR(totalSavings)}
           </h2>
 
         </div>
@@ -287,8 +297,8 @@ const ToolSelector = () => {
             Annual Savings
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-bold">
-            ${annualSavings.toFixed(0)}
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-400">
+            {formatINR(annualSavings)}
           </h2>
 
         </div>
@@ -321,7 +331,7 @@ const ToolSelector = () => {
             </p>
 
             <h3 className="text-5xl font-bold">
-              ${(totalCurrentSpend * 12).toFixed(0)}
+              {formatINR(totalCurrentSpend * 12)}
             </h3>
 
           </div>
@@ -333,7 +343,7 @@ const ToolSelector = () => {
             </p>
 
             <h3 className="text-5xl font-bold text-green-400">
-              ${(totalRecommendedSpend * 12).toFixed(0)}
+              {formatINR(totalRecommendedSpend * 12)}
             </h3>
 
           </div>
@@ -345,7 +355,7 @@ const ToolSelector = () => {
             </p>
 
             <h3 className="text-5xl font-bold text-blue-400">
-              ${annualSavings.toFixed(0)}
+              {formatINR(annualSavings)}
             </h3>
 
           </div>
@@ -457,8 +467,11 @@ const ToolSelector = () => {
 
           </div>
 
-          <p className="text-zinc-300 text-xl leading-relaxed text-center max-w-5xl mx-auto">
-            {aiSummary}
+          <p className="text-zinc-300 text-xl leading-relaxed text-center max-w-10xl mx-auto">
+
+            {generatedSummary ||
+              "AI-generated executive insights will appear after generating the audit report."}
+
           </p>
 
         </div>
@@ -552,21 +565,21 @@ const ToolSelector = () => {
                 <p className="text-zinc-300">
                   Current Spend:
                   <span className="text-white font-semibold ml-2">
-                    ${result.monthlySpend}
+                    {formatINR(result.monthlySpend)}
                   </span>
                 </p>
 
                 <p className="text-zinc-300">
                   Recommended Spend:
                   <span className="text-green-400 font-semibold ml-2">
-                    ${result.recommendedSpend.toFixed(0)}
+                    {formatINR(result.recommendedSpend)}
                   </span>
                 </p>
 
                 <p className="text-zinc-300">
                   Estimated Savings:
                   <span className="text-green-500 font-semibold ml-2">
-                    ${result.savings.toFixed(0)}
+                    {formatINR(result.savings)}
                   </span>
                 </p>
 
@@ -640,21 +653,21 @@ const ToolSelector = () => {
               <p>
                 Monthly Spend:
                 <span className="text-white ml-2">
-                  ${report.monthly_spend}
+                  {formatINR(report.monthly_spend)}
                 </span>
               </p>
 
               <p>
                 Recommended Spend:
                 <span className="text-green-400 ml-2">
-                  ${report.recommended_spend}
+                  {formatINR(report.recommended_spend)}
                 </span>
               </p>
 
               <p>
                 Savings:
                 <span className="text-blue-400 ml-2">
-                  ${report.savings}
+                  {formatINR(report.savings)}
                 </span>
               </p>
 

@@ -2,7 +2,7 @@ const calculateSavings = (monthlySpend, usage, seats) => {
 
   let recommendedSpend = monthlySpend;
 
-  if (usage === "Weekly" || usage === "Rarely") {
+  if (usage === "Weekly" || usage === "Occasionally") {
     recommendedSpend = monthlySpend * 0.6;
   }
 

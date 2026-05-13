@@ -6,7 +6,7 @@ const ToolCard = ({
   onInputChange,
 }) => {
 
-  const { name, description, logo } = tool;
+  const { name, description, logo, plans } = tool;
 
   return (
 
@@ -69,25 +69,49 @@ const ToolCard = ({
 
         <div className="mt-6 border-t border-zinc-800 pt-5 pb-6 space-y-4">
 
-          {/* Monthly Spend */}
+          {/* Plan Selection */}
 
           <div>
 
             <label className="block text-sm text-zinc-400 mb-2">
-              Monthly Spend ($)
+              Select Plan
             </label>
 
-            <input
-              type="number"
-              min="0"
-              placeholder="Enter monthly spend"
-              value={toolData?.monthlySpend || ""}
+            <select
+              value={toolData?.selectedPlan || ""}
               onClick={(e) => e.stopPropagation()}
-              onChange={(e) =>
-                onInputChange(name, "monthlySpend", e.target.value)
-              }
-              className="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 outline-none focus:border-green-500 invalid:border-red-500"
-            />
+              onChange={(e) => {
+
+                const selectedPlan = plans.find(
+                  (plan) => plan.name === e.target.value
+                );
+
+                onInputChange(name, "selectedPlan", selectedPlan.name);
+
+                onInputChange(
+                  name,
+                  "monthlySpend",
+                  selectedPlan.price
+                );
+
+              }}
+              className="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 outline-none focus:border-green-500"
+            >
+
+              <option value="">Select plan</option>
+
+              {plans.map((plan) => (
+
+                <option
+                  key={plan.name}
+                  value={plan.name}
+                >
+                  {plan.name} 
+                </option>
+
+              ))}
+
+            </select>
 
           </div>
 
